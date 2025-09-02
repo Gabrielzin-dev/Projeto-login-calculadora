@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let currentInput = "";
         let lastResult = null;
 
+        // Clique nos botões
         buttons.forEach(btn => {
             btn.addEventListener("click", () => {
                 const value = btn.textContent;
@@ -111,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // adicionar operadores
+                // adicionar operadores ou números
                 if (action) {
                     currentInput += action;
                 } else {
@@ -120,6 +121,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 display.textContent = currentInput;
             });
+        });
+
+        // --- Digitação pelo teclado ---
+        document.addEventListener("keydown", (e) => {
+            if (!isNaN(e.key) || e.key === ".") {
+                currentInput += e.key;
+                display.textContent = currentInput;
+            } else if (["+", "-", "*", "/"].includes(e.key)) {
+                currentInput += e.key;
+                display.textContent = currentInput;
+            } else if (e.key === "Enter") {
+                try {
+                    lastResult = eval(currentInput);
+                    display.textContent = lastResult;
+                    currentInput = lastResult.toString();
+                } catch {
+                    display.textContent = "Erro";
+                    currentInput = "";
+                }
+            } else if (e.key === "Backspace") {
+                currentInput = currentInput.slice(0, -1);
+                display.textContent = currentInput || "0";
+            } else if (e.key === "Escape") {
+                currentInput = "";
+                display.textContent = "0";
+            }
         });
     }
 });
